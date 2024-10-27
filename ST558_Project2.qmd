@@ -1,0 +1,22 @@
+---
+title: "ST558 Project 2"
+author: Dane Korver
+date: Wednesday, November 6, 2024
+format: html
+editor: visual
+---
+
+```{r}
+#| message: FALSE
+#| echo: FALSE
+#| warning: FALSE
+
+# Load libraries
+library(tidyverse)
+# Read in data
+nfl_plays <- read_csv("/Users/danekorver/Documents/Fall2024 ST558/scratch/NFL Play by Play 2009-2018 (v5).csv")
+```
+
+# Preparing for R Shiny app development
+
+For this project, I decided to look at the [NFL play-by-play Data](https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data) for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables.
