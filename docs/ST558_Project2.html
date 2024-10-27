@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -115,7 +149,27 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="preparing-for-r-shiny-app-development" class="level1">
 <h1>Preparing for R Shiny app development</h1>
-<p>For this project, I decided to look at the <a href="https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data">NFL play-by-play Data</a> for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables.</p>
+<p>For this project, I decided to look at the <a href="https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data">NFL play-by-play Data</a> for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables. Since each observation represents a play, let’s look at a frequency distribution of the differnt play types between 2009-2018.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(play_type) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percent=</span>n<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+   play_type        n percent
+   &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;
+ 1 extra_point  10934   2.43 
+ 2 field_goal    9777   2.18 
+ 3 kickoff      25552   5.69 
+ 4 no_play      42431   9.44 
+ 5 pass        186677  41.5  
+ 6 punt         23914   5.32 
+ 7 qb_kneel      3830   0.852
+ 8 qb_spike       690   0.154
+ 9 run         132692  29.5  
+10 &lt;NA&gt;         12874   2.86 </code></pre>
+</div>
+</div>
 
 
 </section>

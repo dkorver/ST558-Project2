@@ -19,4 +19,13 @@ nfl_plays <- read_csv("/Users/danekorver/Documents/Fall2024 ST558/scratch/NFL Pl
 
 # Preparing for R Shiny app development
 
-For this project, I decided to look at the [NFL play-by-play Data](https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data) for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables.
+For this project, I decided to look at the [NFL play-by-play Data](https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data) for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables.  Since each observation represents a play, let's look at a frequency distribution of the differnt play types between 2009-2018.   
+
+```{r}
+
+nfl_plays %>% 
+  count(play_type) %>%
+  mutate(percent=n*100/sum(n))
+
+```
+

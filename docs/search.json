@@ -4,6 +4,6 @@
     "href": "ST558_Project2.html",
     "title": "ST558 Project 2",
     "section": "",
-    "text": "Preparing for R Shiny app development\nFor this project, I decided to look at the NFL play-by-play Data for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables."
+    "text": "Preparing for R Shiny app development\nFor this project, I decided to look at the NFL play-by-play Data for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables. Since each observation represents a play, let’s look at a frequency distribution of the differnt play types between 2009-2018.\n\nnfl_plays %&gt;% \n  count(play_type) %&gt;%\n  mutate(percent=n*100/sum(n))\n\n# A tibble: 10 × 3\n   play_type        n percent\n   &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;\n 1 extra_point  10934   2.43 \n 2 field_goal    9777   2.18 \n 3 kickoff      25552   5.69 \n 4 no_play      42431   9.44 \n 5 pass        186677  41.5  \n 6 punt         23914   5.32 \n 7 qb_kneel      3830   0.852\n 8 qb_spike       690   0.154\n 9 run         132692  29.5  \n10 &lt;NA&gt;         12874   2.86"
   }
 ]
