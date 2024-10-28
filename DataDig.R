@@ -46,5 +46,11 @@ summary(fg_blocked$kick_distance)
 ggplot(data=fg_blocked,aes(x=kick_distance)) +
   geom_bar(stat="count")
 
+nfl_plays %>% 
+  filter(play_type=="field_goal") %>%
+  count(qtr,down) %>%
+  mutate(percent=n*100/sum(n))
+
+
 
 

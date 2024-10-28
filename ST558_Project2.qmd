@@ -40,7 +40,7 @@ nfl_plays %>%
 
 ```
 
-The average distance of the field goals 'made' between 2009-2018 was around 36 yards with a range of 18-64 yards. The record for the longest field goal was broken during this time frame in 2013 by Matt Prater of the Denver Broncos with a 64 yard field goal kick. Until that time, the record was 63 yards by Tom Dempsey of the New Orleans Saints in 1970. The current record is 66 yards held by Justin Tucker of the Baltimore Ravens which was kicked in the 2021 season. (Source: [ESPN](https://www.espn.com/nfl/story/_/id/40994229/what-longest-field-goals-nfl-history) and [Wikipedia](https://en.wikipedia.org/wiki/Field_goal))
+The average distance of the field goals 'made' between 2009-2018 was around 36 yards with a range of 18-64 yards. The record for the longest field goal was broken during this time frame in 2013 by Matt Prater of the Denver Broncos with a 64 yard field goal kick. Until that time, the record was 63 yards by Tom Dempsey of the New Orleans Saints in 1970. The current record is 66 yards held by Justin Tucker of the Baltimore Ravens which was kicked in the 2021 season which is outside the range of this data. (Source: [ESPN](https://www.espn.com/nfl/story/_/id/40994229/what-longest-field-goals-nfl-history) and [Wikipedia](https://en.wikipedia.org/wiki/Field_goal))
 
 ```{r}
 
@@ -50,6 +50,9 @@ summary(fg_made$kick_distance)
 
 ```
 ```{r}
+#| message: FALSE
+#| echo: FALSE
+#| warning: FALSE
 
 ggplot(data=fg_made,aes(x=kick_distance)) + geom_bar(stat="count") + labs(title = "Histogram of 'Made' Field Goals", subtitle = "for the years 2009-2018", x = "Kick Distance (in yards)", y = "Count") + theme_minimal() + 
 scale_x_continuous(breaks=seq(0,65,5)) +
@@ -57,5 +60,21 @@ scale_y_continuous(breaks=seq(0,400,50)) +
 theme(plot.title=element_text(hjust = 0.5),
         plot.subtitle=element_text(hjust = 0.5),
         axis.line = element_line(colour = "grey50"))
+
+```
+
+Most field goal attempts were completed on 'Fourth Down', but in the second, fourth and in overtime (categorized as 5th quarter in the data) the field goal attempt could have been done on 'First', 'Second' and 'Third' downs and looking at the data the time left for those field goal attempts were in the end of the quarter.
+
+```{r}
+
+nfl_plays %>% 
+  filter(play_type=="field_goal") %>%
+  count(down) %>%
+  mutate(percent=n*100/sum(n))
+
+nfl_plays %>% 
+  filter(play_type=="field_goal") %>%
+  count(qtr,down) %>%
+  mutate(percent=n*100/sum(n))
 
 ```

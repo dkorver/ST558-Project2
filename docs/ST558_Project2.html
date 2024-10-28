@@ -185,7 +185,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 3 missed             1375   14.1 </code></pre>
 </div>
 </div>
-<p>The average distance of the field goals ‘made’ between 2009-2018 was around 36 yards with a range of 18-64 yards. The record for the longest field goal was broken during this time frame in 2013 by Matt Prater of the Denver Broncos with a 64 yard field goal kick. Until that time, the record was 63 yards by Tom Dempsey of the New Orleans Saints in 1970. The current record is 66 yards held by Justin Tucker of the Baltimore Ravens which was kicked in the 2021 season. (Source: <a href="https://www.espn.com/nfl/story/_/id/40994229/what-longest-field-goals-nfl-history">ESPN</a> and <a href="https://en.wikipedia.org/wiki/Field_goal">Wikipedia</a>)</p>
+<p>The average distance of the field goals ‘made’ between 2009-2018 was around 36 yards with a range of 18-64 yards. The record for the longest field goal was broken during this time frame in 2013 by Matt Prater of the Denver Broncos with a 64 yard field goal kick. Until that time, the record was 63 yards by Tom Dempsey of the New Orleans Saints in 1970. The current record is 66 yards held by Justin Tucker of the Baltimore Ravens which was kicked in the 2021 season which is outside the range of this data. (Source: <a href="https://www.espn.com/nfl/story/_/id/40994229/what-longest-field-goals-nfl-history">ESPN</a> and <a href="https://en.wikipedia.org/wiki/Field_goal">Wikipedia</a>)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fg_made <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"field_goal"</span> <span class="sc">&amp;</span> field_goal_result<span class="sc">==</span><span class="st">"made"</span>)</span>
@@ -196,22 +196,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>fg_made,<span class="fu">aes</span>(<span class="at">x=</span>kick_distance)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"count"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of 'Made' Field Goals"</span>, <span class="at">subtitle =</span> <span class="st">"for the years 2009-2018"</span>, <span class="at">x =</span> <span class="st">"Kick Distance (in yards)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">65</span>,<span class="dv">5</span>)) <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">400</span>,<span class="dv">50</span>)) <span class="sc">+</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title=</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle=</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"grey50"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 6 rows containing non-finite outside the scale range
-(`stat_count()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="ST558_Project2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+</div>
+<p>Most field goal attempts were completed on ‘Fourth Down’, but in the second, fourth and in overtime (categorized as 5th quarter in the data) the field goal attempt could have been done on ‘First’, ‘Second’ and ‘Third’ downs and looking at the data the time left for those field goal attempts were in the end of the quarter.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"field_goal"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(down) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percent=</span>n<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+   down     n percent
+  &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+1     1   279  2.85  
+2     2   265  2.71  
+3     3   244  2.50  
+4     4  8988 91.9   
+5    NA     1  0.0102</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"field_goal"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(qtr,down) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percent=</span>n<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15 × 4
+     qtr  down     n percent
+   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+ 1     1     4  1809 18.5   
+ 2     2     1   206  2.11  
+ 3     2     2   169  1.73  
+ 4     2     3   160  1.64  
+ 5     2     4  2899 29.7   
+ 6     2    NA     1  0.0102
+ 7     3     4  1849 18.9   
+ 8     4     1    56  0.573 
+ 9     4     2    73  0.747 
+10     4     3    56  0.573 
+11     4     4  2341 23.9   
+12     5     1    17  0.174 
+13     5     2    23  0.235 
+14     5     3    28  0.286 
+15     5     4    90  0.921 </code></pre>
 </div>
 </div>
 
