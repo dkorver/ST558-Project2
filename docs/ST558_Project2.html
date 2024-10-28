@@ -149,7 +149,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="preparing-for-r-shiny-app-development" class="level1">
 <h1>Preparing for R Shiny app development</h1>
-<p>For this project, I decided to look at the <a href="https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data">NFL play-by-play Data</a> for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables. Since each observation represents a play, let’s look at a frequency distribution of the differnt play types between 2009-2018.</p>
+<p>For this project, I decided to look at the <a href="https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data">NFL play-by-play Data</a> for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables. Since each observation represents a play, let’s look at a frequency distribution of the different play types between 2009-2018. From the output below, 41.54% of the plays between 2009-2018 were ‘pass’ plays and 29.53% were ‘run’ plays.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="sc">%&gt;%</span> </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(play_type) <span class="sc">%&gt;%</span></span>
@@ -168,6 +168,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  8 qb_spike       690   0.154
  9 run         132692  29.5  
 10 &lt;NA&gt;         12874   2.86 </code></pre>
+</div>
+</div>
+<p>If you watch football, you know that many games are decided by making field goals, which were 2.18% of all plays played between 2009-2018 and 83.93% of them were ‘made’.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"field_goal"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(field_goal_result) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percent=</span>n<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  field_goal_result     n percent
+  &lt;chr&gt;             &lt;int&gt;   &lt;dbl&gt;
+1 blocked             196    2.00
+2 made               8206   83.9 
+3 missed             1375   14.1 </code></pre>
+</div>
+</div>
+<p>The average distance of the field goals ‘made’ between 2009-2018 was around 36 yards with a range of 18-64 yards. The record for the longest field goal was broken during this time frame in 2013 by Matt Prater of the Denver Broncos with a 64 yard field goal kick. Until that time, the record was 63 yards by Tom Dempsey of the New Orleans Saints in 1970. The current record is 66 yards held by Justin Tucker of the Baltimore Ravens which was kicked in the 2021 season. (Source: <a href="https://www.espn.com/nfl/story/_/id/40994229/what-longest-field-goals-nfl-history">ESPN</a> and <a href="https://en.wikipedia.org/wiki/Field_goal">Wikipedia</a>)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fg_made <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"field_goal"</span> <span class="sc">&amp;</span> field_goal_result<span class="sc">==</span><span class="st">"made"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fg_made<span class="sc">$</span>kick_distance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  18.00   28.00   36.00   36.05   44.00   64.00       6 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>fg_made,<span class="fu">aes</span>(<span class="at">x=</span>kick_distance)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"count"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of 'Made' Field Goals"</span>, <span class="at">subtitle =</span> <span class="st">"for the years 2009-2018"</span>, <span class="at">x =</span> <span class="st">"Kick Distance (in yards)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">65</span>,<span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">400</span>,<span class="dv">50</span>)) <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title=</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle=</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"grey50"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 6 rows containing non-finite outside the scale range
+(`stat_count()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ST558_Project2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 
