@@ -17,6 +17,39 @@ library(tidyverse)
 nfl_plays <- read_csv("/Users/danekorver/Documents/Fall2024 ST558/scratch/NFL Play by Play 2009-2018 (v5).csv")
 ```
 
+```{r}
+#get the year out of game_date
+nfl_plays$year<-substr(nfl_plays$game_date,1,4)
+nfl_plays$order<-1
+nfl_plays <- nfl_plays %>% 
+  labelled::set_variable_labels(play_type = "Type of Play",
+                                field_goal_result = "Field Goal Result")
+
+totals <- nfl_plays %>% 
+  filter(play_type=="run" | play_type=="pass") %>%
+  group_by(game_id,posteam_type,play_type) %>%
+  summarise(total=sum(yards_gained))
+#create a new variable that concatenates posteam_type and play_type 
+totals$category <- paste(totals$posteam_type,totals$play_type,sep='_')
+#transform to wide format
+totals_wide <- totals %>%
+  pivot_wider(id_cols=game_id,names_from = category, values_from = total)
+
+#last play of the game
+final_score <- nfl_plays %>% 
+  select(game_id,total_home_score,total_away_score,posteam_type,play_type,field_goal_result,kick_distance,posteam_type) %>%
+  group_by(game_id) %>%
+  slice_tail(n = 1) %>%
+  ungroup()
+#Did the Home team win the game? 1=yes, 0=no
+final_score$home_team_won <- ifelse(final_score$total_home_score>final_score$total_away_score,1,0)
+#Score differential
+final_score$score_diff <- final_score$total_home_score-final_score$total_away_score
+#merge totals_wide and final_score 
+totals_wide2 <- left_join(totals_wide,final_score,join_by(game_id))
+
+```
+
 # Preparing for R Shiny app development
 
 For this project, I decided to look at the [NFL play-by-play Data](https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data) for the years 2009-2018 from kaggle.com. The data had 449,371 observations and 255 variables. Since each observation represents a play, let's look at a frequency distribution of the different play types between 2009-2018. From the output below, 41.54% of the plays between 2009-2018 were 'pass' plays and 29.53% were 'run' plays.
@@ -49,6 +82,7 @@ fg_made <- nfl_plays %>%
 summary(fg_made$kick_distance)
 
 ```
+
 ```{r}
 #| message: FALSE
 #| echo: FALSE
@@ -76,5 +110,89 @@ nfl_plays %>%
   filter(play_type=="field_goal") %>%
   count(qtr,down) %>%
   mutate(percent=n*100/sum(n))
+
+```
+
+With most field goal attempts happening at the end of regulation or at the end of the first half and since we have play-by-play data let’s look at the field goal results where it was the last play of the game. I segregated the data by team and the data doesn’t look too surprising. It's interesting to see that the “home” team had a higher percentage of their field goal kicks “blocked”, but it looks like the “home” team did have a slight advantage with the “visiting” team having an increased chance of having a “missed” field goals in the closing seconds of regulation.
+
+```{r}
+
+fg_pcts <- final_score %>% 
+  filter(play_type=="field_goal") %>%
+  count(posteam_type,field_goal_result) %>%
+  group_by(posteam_type) %>%
+  mutate(percent=n*100/sum(n)) %>%
+  ungroup()
+fg_pcts
+
+ggplot(data=fg_pcts, aes(x=posteam_type,y=percent,fill=field_goal_result)) +
+  geom_bar(stat="identity",position=position_dodge()) +
+  labs(title = "Histogram of Field Goals on the last play of the game",
+       subtitle = "for the years 2009-2018",
+       x = "Kicking team",
+       y = "Percent") +
+  scale_fill_hue(name="Field Goal Result") + 
+  theme_minimal() +
+  theme(plot.title=element_text(hjust = 0.5),
+        plot.subtitle=element_text(hjust = 0.5),
+        axis.line = element_line(colour = "grey50"))+
+  scale_y_continuous(limits=c(0,100),breaks=c(0,10,20,30,40,50,60,70,80,90,100))
+
+```
+
+I am curious what the data looks like for when the game ended in a field goal, how close was the game. To show this, I created a “bubble plot” where each “bubble” is the proportion of games at the “kick distance” and the final score difference between the “home” and “visiting” team. A “negative” final score difference represents the “visiting” team winning the game and a “positive” final score difference represents the “home” team winning the game. Looking at the bubble plot, there was an instance where the “home” team missed the field goal and the gam resulted in a “tie.” There are three instances where the score difference was greater than 5, but the majority of the games where the last play was a field goal the game was close within 4 points of each other which matches my intuition.
+
+```{r}
+
+final_score_fg <- final_score %>% 
+  filter(play_type=="field_goal")
+
+fg_pcts2 <- final_score_fg %>% 
+  filter(play_type=="field_goal") %>%
+  count(kick_distance,score_diff,posteam_type,field_goal_result) %>%
+  group_by(score_diff) %>%
+  mutate(size=n*100/sum(n))
+
+fg_pcts2$category <- paste(fg_pcts2$posteam_type,fg_pcts2$field_goal_result,sep=' ')
+ggplot(fg_pcts2, aes(x=score_diff,y=kick_distance, size = size, color = category)) +
+  geom_point() +
+  #scale_size_area(max_size = 5)+
+  scale_x_continuous(limits=c(-10,4),breaks=c(-10,-8,-6,-5,-4,-3,-2,-1,0,1,2,3,4))+
+  scale_y_continuous(limits=c(0,100),breaks=c(0,10,20,30,40,50,60,70,80,90,100))
+
+```
+
+We have looked at the overall “made” field goal distances, field goal results by team at the end of regulation and now lets look at the individual kickers. I came across the neat graph called a “Cleveland Dot Plot” and I thought this would be cool to take a look at what Field Goal Kickers have the best percentage of “made” field goals during the years 2009-2018. It looks like M. Scifres (San Diego Chargers) is 100% with only 1 field goal and S. Andrus (San Francisco 49ers) has the worst percentage of “made” field goals with only 2 out of 5 field goals or 40%.
+
+```{r}
+
+kicker_stats <- nfl_plays %>% 
+  filter(play_type=="field_goal") %>%
+  group_by(kicker_player_name,field_goal_result) %>%
+  summarise(total=sum(order)) %>%
+  ungroup() %>%
+  group_by(kicker_player_name) %>%
+  mutate(percent=(total/sum(total))*100)
+
+kicker_stats_made <- kicker_stats %>% 
+  filter(field_goal_result=="made") %>%
+  arrange(percent)
+
+ggplot(kicker_stats_made, aes(x = percent, y = reorder(kicker_player_name, percent))) +
+  geom_point(size = 0.5) +  
+  labs(title = "Cleveland Dot Plot of Field Goals 'Made'",
+       subtitle = "by Player for the years 2009-2018",
+       x = "Percent",
+       y = "Kicker") +
+  scale_x_continuous(limits=c(0,100),breaks=c(0,10,20,30,40,50,60,70,80,90,100))+
+  theme_bw() +
+  theme(
+    plot.title=element_text(hjust = 0.5),
+    plot.subtitle=element_text(hjust = 0.5),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_text(angle = 0, vjust = 1, size=5)
+  )
 
 ```
