@@ -95,15 +95,15 @@ summary(fg_made$kick_distance)
 #| warning: FALSE
 
 ggplot(data=fg_made,aes(x=kick_distance)) + geom_bar(stat="count") + labs(title = "Histogram of 'Made' Field Goals", subtitle = "for the years 2009-2018", x = "Kick Distance (in yards)", y = "Count") + theme_minimal() + 
-scale_x_continuous(breaks=seq(0,65,5)) +
-scale_y_continuous(breaks=seq(0,400,50)) + 
+scale_x_continuous(limits=c(0,65),breaks=seq(0,65,5)) +
+scale_y_continuous(limits=c(0,400),breaks=seq(0,400,50)) + 
 theme(plot.title=element_text(hjust = 0.5),
         plot.subtitle=element_text(hjust = 0.5),
         axis.line = element_line(colour = "grey50"))
 
 ```
 
-Most field goal attempts were completed on 'Fourth Down', but in the second, fourth and in overtime (categorized as 5th quarter in the data) the field goal attempt could have been done on 'First', 'Second' and 'Third' downs which makes sense especially if you watch football because if a team is not able to get into the end zone before Halftime or need those 3 points to win the game they are going to kick the field goal at the close of the first half or at the end of regulation.
+Most field goal attempts were completed on 'Fourth Down', but in the second, fourth and in overtime (categorized as 5th quarter in the data) the field goal attempt could have been done on 'First', 'Second' and 'Third' downs which makes sense especially if you watch football because if a team is not able to get into the end zone before Halftime or need those 3 points to win the game they are going to kick the field goal at the close of the first half or at the end of regulation regardless of 'down'.
 
 ```{r}
 

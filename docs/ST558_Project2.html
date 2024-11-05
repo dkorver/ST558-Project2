@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Most field goal attempts were completed on ‘Fourth Down’, but in the second, fourth and in overtime (categorized as 5th quarter in the data) the field goal attempt could have been done on ‘First’, ‘Second’ and ‘Third’ downs which makes sense especially if you watch football because if a team is not able to get into the end zone before Halftime or need those 3 points to win the game they are going to kick the field goal at the close of the first half or at the end of regulation.</p>
+<p>Most field goal attempts were completed on ‘Fourth Down’, but in the second, fourth and in overtime (categorized as 5th quarter in the data) the field goal attempt could have been done on ‘First’, ‘Second’ and ‘Third’ downs which makes sense especially if you watch football because if a team is not able to get into the end zone before Halftime or need those 3 points to win the game they are going to kick the field goal at the close of the first half or at the end of regulation regardless of ‘down’.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="sc">%&gt;%</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"field_goal"</span>) <span class="sc">%&gt;%</span></span>
