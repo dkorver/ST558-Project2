@@ -14,7 +14,7 @@ editor: visual
 # Load libraries
 library(tidyverse)
 # Read in data
-nfl_plays <- read_csv("/Users/danekorver/Documents/Fall2024 ST558/scratch/NFL Play by Play 2009-2018 (v5).csv")
+nfl_plays <- read_csv("NFL Play by Play 2009-2018 (v5).csv")
 ```
 
 # Prepping up the data
