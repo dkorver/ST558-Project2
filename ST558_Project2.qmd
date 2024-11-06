@@ -103,7 +103,7 @@ theme(plot.title=element_text(hjust = 0.5),
 
 ```
 
-It is also interesting to look at the distribution of "missed" field goals. The average "missed" field goal between 2009-2018 was about 46 yards with a range of 21-71 yards. The 71 yard attempt was during the first half of the St. Louis Rams and San Francisco 49ers game on September 26, 2013 by Phil Dawson.  
+It is also interesting to look at the distribution of "missed" field goals. The average "missed" field goal between 2009-2018 was about 46 yards with a range of 21-71 yards. The 71 yard attempt was during the first half of the St. Louis Rams and San Francisco 49ers game on September 26, 2013 by Phil Dawson.
 
 ```{r}
 
@@ -127,7 +127,7 @@ theme(plot.title=element_text(hjust = 0.5),
 
 ```
 
-The graph of field goal attempts by year, shows consistency in the percentage of "made" and "blocked" field goals between the years 2009-2018. There was a slight decline of "missed" field goals with about 16.6% of field goals being "missed" in 2009 and hovering around 13-14% by 2018. 
+The graph of field goal attempts by year, shows consistency in the percentage of "made" and "blocked" field goals between the years 2009-2018. There was a slight decline of "missed" field goals with about 16.6% of field goals being "missed" in 2009 and hovering around 13-14% by 2018.
 
 ```{r}
 
