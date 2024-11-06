@@ -11,7 +11,7 @@ library(shiny)
 library(readr)
 library(rsconnect)
 
-nfl_plays <- readr::read_csv(file = "NFL Play by Play 2009-2018 (v5).csv",show_col_types = FALSE)
+nfl_plays <- read_csv("https://raw.githubusercontent.com/ryurko/nflscrapR-data/master/play_by_play_data/regular_season/reg_pbp_2018.csv")
 vars <- setdiff(names(nfl_plays), "nfl")
 
 # Define UI for application that draws a histogram
