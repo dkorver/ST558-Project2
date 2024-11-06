@@ -103,6 +103,8 @@ theme(plot.title=element_text(hjust = 0.5),
 
 ```
 
+It is also interesting to look at the distribution of "missed" field goals. The average "missed" field goal between 2009-2018 was about 46 yards with a range of 21-71 yards. The 71 yard attempt was during the first half of the St. Louis Rams and San Francisco 49ers game on September 26, 2013 by Phil Dawson.  
+
 ```{r}
 
 fg_missed <- nfl_plays %>% 
@@ -118,10 +120,43 @@ summary(fg_missed$kick_distance)
 
 ggplot(data=fg_missed,aes(x=kick_distance)) + geom_bar(stat="count") + labs(title = "Histogram of 'Missed' Field Goals", subtitle = "for the years 2009-2018", x = "Kick Distance (in yards)", y = "Count") + theme_minimal() + 
 scale_x_continuous(limits=c(0,65),breaks=seq(0,65,5)) +
-scale_y_continuous(limits=c(0,400),breaks=seq(0,400,50)) + 
+scale_y_continuous(limits=c(0,100),breaks=seq(0,100,10)) + 
 theme(plot.title=element_text(hjust = 0.5),
         plot.subtitle=element_text(hjust = 0.5),
         axis.line = element_line(colour = "grey50"))
+
+```
+
+The graph of field goal attempts by year, shows consistency in the percentage of "made" and "blocked" field goals between the years 2009-2018. There was a slight decline of "missed" field goals with about 16.6% of field goals being "missed" in 2009 and hovering around 13-14% by 2018. 
+
+```{r}
+
+fg_byyear <- nfl_plays %>% 
+  filter(play_type=="field_goal") %>%
+  group_by(year) %>%
+  count(field_goal_result) %>%
+  mutate(percent=n*100/sum(n))
+fg_byyear
+
+```
+
+```{r}
+#| message: FALSE
+#| echo: FALSE
+#| warning: FALSE
+
+ggplot(data=fg_byyear, aes(x=year,y=percent,fill=field_goal_result)) +
+  geom_bar(stat="identity",position=position_dodge()) +
+  labs(title = "Histogram of Field Goals by Year",
+       subtitle = "for the years 2009-2018",
+       x = "Year",
+       y = "Percent") +
+  scale_fill_hue(name="Field Goal Result") + 
+  theme_minimal() +
+  theme(plot.title=element_text(hjust = 0.5),
+        plot.subtitle=element_text(hjust = 0.5),
+        axis.line = element_line(colour = "grey50"))+
+  scale_y_continuous(limits=c(0,100),breaks=c(0,10,20,30,40,50,60,70,80,90,100))
 
 ```
 
