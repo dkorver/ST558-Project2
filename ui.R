@@ -28,7 +28,7 @@ ui <- fluidPage(
              br(),
              "This R Shiny App is using the data set from the", a(href = "https://www.kaggle.com/datasets/maxhorowitz/nflplaybyplay2009to2016/data", " Detailed NFL Play-by-Play Data 2009-2018"),"from Kaggle.com.  
   There are two different pages in this app.    
-  There is a 'Data Exploration' page where you can look at the first few observations in the dataset and summary statistics of all the variables.  
+  There is a 'Data Exploration' page where you can look at the first few observations in the dataset and summary statistics of selected variables.  
   There is a 'Data Download' page where you can download and view a subset of the dataset.",
              br(),
              br(),
