@@ -152,33 +152,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#get the year out of game_date</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>nfl_plays<span class="sc">$</span>year<span class="ot">&lt;-</span><span class="fu">substr</span>(nfl_plays<span class="sc">$</span>game_date,<span class="dv">1</span>,<span class="dv">4</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nfl_plays<span class="sc">$</span>order<span class="ot">&lt;-</span><span class="dv">1</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  labelled<span class="sc">::</span><span class="fu">set_variable_labels</span>(<span class="at">play_type =</span> <span class="st">"Type of Play"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">field_goal_result =</span> <span class="st">"Field Goal Result"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"run"</span> <span class="sc">|</span> play_type<span class="sc">==</span><span class="st">"pass"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(game_id,posteam_type,play_type) <span class="sc">%&gt;%</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total=</span><span class="fu">sum</span>(yards_gained))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#create a new variable that concatenates posteam_type and play_type </span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>totals<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">paste</span>(totals<span class="sc">$</span>posteam_type,totals<span class="sc">$</span>play_type,<span class="at">sep=</span><span class="st">'_'</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#transform to wide format</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>totals_wide <span class="ot">&lt;-</span> totals <span class="sc">%&gt;%</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols=</span>game_id,<span class="at">names_from =</span> category, <span class="at">values_from =</span> total)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#last play of the game</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>final_score <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(game_id,total_home_score,total_away_score,posteam_type,play_type,field_goal_result,kick_distance,posteam_type) <span class="sc">%&gt;%</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(game_id) <span class="sc">%&gt;%</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#Did the Home team win the game? 1=yes, 0=no</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>final_score<span class="sc">$</span>home_team_won <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(final_score<span class="sc">$</span>total_home_score<span class="sc">&gt;</span>final_score<span class="sc">$</span>total_away_score,<span class="dv">1</span>,<span class="dv">0</span>)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#Score differential</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>final_score<span class="sc">$</span>score_diff <span class="ot">&lt;-</span> final_score<span class="sc">$</span>total_home_score<span class="sc">-</span>final_score<span class="sc">$</span>total_away_score</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#merge totals_wide and final_score </span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>totals_wide2 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(totals_wide,final_score,<span class="fu">join_by</span>(game_id))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#creating a count variable</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>nfl_plays<span class="sc">$</span>order<span class="ot">&lt;-</span><span class="dv">1</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#creating labels</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>nfl_plays <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  labelled<span class="sc">::</span><span class="fu">set_variable_labels</span>(<span class="at">play_type =</span> <span class="st">"Type of Play"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">field_goal_result =</span> <span class="st">"Field Goal Result"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#finding the total yards passing &amp; running for each game by team</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>totals <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(play_type<span class="sc">==</span><span class="st">"run"</span> <span class="sc">|</span> play_type<span class="sc">==</span><span class="st">"pass"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(game_id,posteam_type,play_type) <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total=</span><span class="fu">sum</span>(yards_gained))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#create a new variable that concatenates posteam_type and play_type </span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>totals<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">paste</span>(totals<span class="sc">$</span>posteam_type,totals<span class="sc">$</span>play_type,<span class="at">sep=</span><span class="st">'_'</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#transform to wide format</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>totals_wide <span class="ot">&lt;-</span> totals <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols=</span>game_id,<span class="at">names_from =</span> category, <span class="at">values_from =</span> total)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#last play of the game</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>final_score <span class="ot">&lt;-</span> nfl_plays <span class="sc">%&gt;%</span> </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(game_id,total_home_score,total_away_score,posteam_type,play_type,field_goal_result,kick_distance,posteam_type) <span class="sc">%&gt;%</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(game_id) <span class="sc">%&gt;%</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#Did the Home team win the game? 1=yes, 0=no</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>final_score<span class="sc">$</span>home_team_won <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(final_score<span class="sc">$</span>total_home_score<span class="sc">&gt;</span>final_score<span class="sc">$</span>total_away_score,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#Score differential</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>final_score<span class="sc">$</span>score_diff <span class="ot">&lt;-</span> final_score<span class="sc">$</span>total_home_score<span class="sc">-</span>final_score<span class="sc">$</span>total_away_score</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#merge totals_wide and final_score </span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>totals_wide2 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(totals_wide,final_score,<span class="fu">join_by</span>(game_id))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="preparing-for-r-shiny-app-development" class="level1">

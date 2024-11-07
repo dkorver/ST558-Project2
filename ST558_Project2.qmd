@@ -26,11 +26,13 @@ nfl_plays <- read_csv("NFL Play by Play 2009-2018 (v5).csv")
 #| 
 #get the year out of game_date
 nfl_plays$year<-substr(nfl_plays$game_date,1,4)
+#creating a count variable
 nfl_plays$order<-1
+#creating labels
 nfl_plays <- nfl_plays %>% 
   labelled::set_variable_labels(play_type = "Type of Play",
                                 field_goal_result = "Field Goal Result")
-
+#finding the total yards passing & running for each game by team
 totals <- nfl_plays %>% 
   filter(play_type=="run" | play_type=="pass") %>%
   group_by(game_id,posteam_type,play_type) %>%
