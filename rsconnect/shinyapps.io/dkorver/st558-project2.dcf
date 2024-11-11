@@ -5,9 +5,9 @@ account: dkorver
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13244914
-bundleId: 9325770
+bundleId: 9347443
 url: https://dkorver.shinyapps.io/st558-project2/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: NFL Play by Play 2009-2018 (v5).csv|nfl_plays.rds
+ignoredFiles: NFL Play by Play 2009-2018 (v5).csv

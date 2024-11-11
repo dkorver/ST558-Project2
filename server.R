@@ -49,7 +49,47 @@ server <- function(input, output) {
   
   output$summaryList <- renderPrint({
     datasel <- selectedData()
-    summary(datasel)
+    
+    # Create separate summaries for numeric and character columns
+    summary_list <- list()
+    
+    # For numeric columns: classical statistics
+    num_cols <- sapply(datasel, is.numeric)
+    if (any(num_cols)) {
+      num_summary <- summary(datasel[, num_cols, drop = FALSE])
+      summary_list$numeric <- num_summary
+    }
+    
+    # For character/factor columns: frequency tables
+    char_cols <- sapply(datasel, function(x) is.character(x) | is.factor(x))
+    if (any(char_cols)) {
+      char_summary <- lapply(datasel[, char_cols, drop = FALSE], function(x) {
+        freq_table <- table(x)
+        prop_table <- prop.table(freq_table) * 100
+        data.frame(
+          Frequency = as.numeric(freq_table),
+          Percentage = round(as.numeric(prop_table), 2)
+        )
+      })
+      summary_list$categorical <- char_summary
+    }
+    
+    # Print the results
+    if (length(summary_list$numeric) > 0) {
+      cat("Numerical Variables:\n")
+      cat("===================\n")
+      print(summary_list$numeric)
+      cat("\n")
+    }
+    
+    if (length(summary_list$categorical) > 0) {
+      cat("\nCategorical Variables:\n")
+      cat("=====================\n")
+      for (var_name in names(summary_list$categorical)) {
+        cat("\n", var_name, ":\n", sep = "")
+        print(summary_list$categorical[[var_name]])
+      }
+    }
   })
   
   # Generate a summary of the dataset ----
