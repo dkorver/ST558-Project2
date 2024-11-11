@@ -12,6 +12,7 @@ library(tidyverse)
 library(readr)
 library(DT)
 library(rsconnect)
+library(gtsummary)
 nfl_plays <- read_csv("https://raw.githubusercontent.com/ryurko/nflscrapR-data/master/play_by_play_data/regular_season/reg_pbp_2018.csv")
 
 # Define server logic to summarize and view selected dataset ----
