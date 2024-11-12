@@ -5,7 +5,7 @@ account: dkorver
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13244914
-bundleId: 9347443
+bundleId: 9347489
 url: https://dkorver.shinyapps.io/st558-project2/
 version: 1
 asMultiple: FALSE

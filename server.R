@@ -13,6 +13,7 @@ library(readr)
 library(DT)
 library(rsconnect)
 library(gtsummary)
+library(bslib)
 nfl_plays <- read_csv("https://raw.githubusercontent.com/ryurko/nflscrapR-data/master/play_by_play_data/regular_season/reg_pbp_2018.csv")
 
 # Define server logic to summarize and view selected dataset ----
@@ -41,10 +42,19 @@ server <- function(input, output) {
   
   #Generate graph based on user input
   output$barPlot <- renderPlot({
-    #get data
-    nflData <- selectedData()
-    
-    ggplot(nflData, aes(x=input$xcol, y=input$ycol, color=as.factor(input$byvar))) + geom_point(shape=1)
+  
+  ggplot(nfl_plays, aes(
+    x = .data[[input$xcol]], 
+    y = .data[[input$ycol]], 
+    color = as.factor(.data[[input$byvar]])
+  )) + 
+    geom_point(alpha = 0.6) +
+    theme_minimal() +
+    labs(
+      x = input$xcol,
+      y = input$ycol,
+      color = input$byvar
+    )
   })
   
   output$summaryList <- renderPrint({

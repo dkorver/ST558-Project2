@@ -11,6 +11,7 @@ library(shiny)
 library(readr)
 library(rsconnect)
 library(gtsummary)
+library(bslib)
 
 nfl_plays <- read_csv("https://raw.githubusercontent.com/ryurko/nflscrapR-data/master/play_by_play_data/regular_season/reg_pbp_2018.csv")
 vars <- setdiff(names(nfl_plays), "nfl")
